@@ -138,7 +138,7 @@ RSpec.describe ListContents, type: :use_case do
       end
 
       it "raises an error" do
-        expect { result }.to raise_error(ArgumentError, "Unsupported content type: Documentary")
+        expect { result }.to raise_error(ListContents::InvalidContentTypeError, "Unsupported content type: Documentary")
       end
     end
   end
