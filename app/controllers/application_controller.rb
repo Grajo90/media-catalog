@@ -4,4 +4,18 @@ class ApplicationController < ActionController::Base
 
   # Changes to the importmap will invalidate the etag for HTML responses
   stale_when_importmap_changes
+
+  # Rescue when record not found
+  rescue_from ActiveRecord::RecordNotFound, with: :render_not_found
+
+  private def render_not_found(error)
+    resource = error.model.underscore
+
+    render json: {
+      error: {
+        code: "#{resource.upcase}_NOT_FOUND",
+        message: "#{resource.humanize} not found"
+      }
+    }, status: :not_found
+  end
 end
