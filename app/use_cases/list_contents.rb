@@ -7,6 +7,7 @@ class ListContents
   ].freeze
 
   Result = Data.define(
+    :list,
     :items,
     :page,
     :per_page,
@@ -19,8 +20,8 @@ class ListContents
 
   def initialize(list_id:, page: 1, per_page: 10, content_type: nil)
     @list_id = list_id
-    @page = page
-    @per_page = per_page
+    @page = (page || 1).to_i
+    @per_page = (per_page || 10).to_i
     @content_type = content_type
   end
 
@@ -39,6 +40,7 @@ class ListContents
     items = items.limit(@per_page)
 
     Result.new(
+      list: list,
       items: items,
       page: @page,
       per_page: @per_page,
