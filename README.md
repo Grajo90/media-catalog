@@ -343,17 +343,37 @@ List → ListItem → Movie
 
 This avoids having separate association tables for every content type while keeping the list ordering in one place.
 
+### Unique positions within a list
+
+Each `ListItem` position is unique within a given list.
+
+This guarantees that a list always has a deterministic ordering and avoids ambiguous situations where two items occupy the same position.
+
+### Duplicate content is allowed
+
+The same content may appear multiple times within the same list, provided each occurrence has a different position.
+
+Each `ListItem` represents an independent placement of a piece of content rather than enforcing uniqueness of the referenced content.
+
 ### Ordering
 
 The order of a list is represented explicitly by `ListItem.position`.
 
 The API always orders items by this field, including when `content_type` filtering is applied. This means filtering a list does not change the relative order of the remaining items.
 
-### Pagination and filtering
+### Filtering before pagination
 
-Pagination and filtering are handled at the database query level rather than loading the complete list into memory.
+When `content_type` is provided, filtering is applied before pagination.
 
-The total count is calculated before applying pagination so that the API can provide useful pagination metadata.
+This ensures that pagination metadata (`total`, `page`, `per_page`) always reflects the filtered result set rather than the original list.
+
+### Stable API contract
+
+The response model was designed with long-term compatibility in mind.
+
+The API exposes a consistent structure across all supported content types and uses nested summary representations for related resources. New functionality is expected to be introduced by adding new attributes rather than changing or removing existing ones whenever possible.
+
+This approach aims to minimise breaking changes for API consumers and reduce the need for versioned endpoints.
 
 ### Validation
 
